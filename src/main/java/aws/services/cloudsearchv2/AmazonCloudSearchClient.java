@@ -237,7 +237,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		updateDocumentRequest(docs.toString());
 	}
 	
-	private void updateDocumentRequest(String body) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
+	public void updateDocumentRequest(String body) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
 		try {
 			Response response = Request.Post("https://" + getDocumentEndpoint() + "/2013-01-01/documents/batch")
 			        .useExpectContinue()
@@ -261,7 +261,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		}
 	}
 	
-	private String inputStreamToString(InputStream in) throws IOException {
+	protected String inputStreamToString(InputStream in) throws IOException {
 		StringWriter output = new StringWriter();
 		InputStreamReader input = new InputStreamReader(in);
 		char[] buffer = new char[1024 * 4];
@@ -272,7 +272,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		return output.toString();
 	}
 
-	private String addDocumentErrorMessage(int statusCode) {
+	public String addDocumentErrorMessage(int statusCode) {
 		if(statusCode == 400) {
 			return "The Content-Type header is missing.	";
 		} else if(statusCode == 411) {
@@ -294,7 +294,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		}
 	}
 
-	private Object toJSON(AmazonCloudSearchDeleteRequest document) throws JSONException {
+	public Object toJSON(AmazonCloudSearchDeleteRequest document) throws JSONException {
 		JSONObject doc = new JSONObject();
 		doc.put("type", "delete");
 		doc.put("id", document.id.toLowerCase());
@@ -302,7 +302,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		return doc;
 	}
 	
-	private JSONObject toJSON(AmazonCloudSearchAddRequest document) throws JSONException {
+	public JSONObject toJSON(AmazonCloudSearchAddRequest document) throws JSONException {
 		JSONObject doc = new JSONObject();
 		doc.put("type", "add");
 		doc.put("id", document.id.toLowerCase());
@@ -403,7 +403,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		return result;
 	}
 
-	private AmazonCloudSearchResult fromJSON(String responseBody) throws JSONException {
+	public AmazonCloudSearchResult fromJSON(String responseBody) throws JSONException {
 		AmazonCloudSearchResult result = new AmazonCloudSearchResult();
 
 		JSONObject root = new JSONObject(responseBody);
