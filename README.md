@@ -1,3 +1,15 @@
+Prezi fork info
+==============================
+Uploading to artifactory (be sure to update the version argument to match pom.xml)
+```
+mvn compile
+mvn package
+mvn deploy:deploy-file --settings=/Users/neumark/.prezi/.coreservices_maven_settings.xml -DgeneratePom=true -Dfile=target/amazon-cloudsearch-client-1.2.jar -DgroupId=com.prezi -DartifactId=amazon-cloudsearch-client -Dversion=1.2 -Dpackaging=jar -DrepositoryId=artifactory -Durl=https://artifactory.prezi.com/prezi-core-releases-local
+
+mvn source:jar
+mvn deploy:deploy-file --settings=/Users/neumark/.prezi/.coreservices_maven_settings.xml -DgeneratePom=true -Dfile=target/amazon-cloudsearch-client-1.2.jar -DgroupId=com.prezi -DartifactId=amazon-cloudsearch-client -Dversion=1.2 -Dpackaging=jar -DrepositoryId=artifactory -Durl=https://artifactory.prezi.com/prezi-core-releases-local -Dclassifier=sources
+```
+
 Amazon Cloudsearch Client Java
 ==============================
 
