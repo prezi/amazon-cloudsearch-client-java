@@ -33,6 +33,10 @@ import com.amazonaws.util.json.JSONArray;
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+
 public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv2.AmazonCloudSearchClient {
     private String searchEndpoint;
     private String documentEndpoint;
@@ -237,16 +241,30 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		updateDocumentRequest(docs.toString());
 	}
 	
-	public void updateDocumentRequest(String body) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
+	public String updateDocumentRequest(String body) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
+        String responseBody = "";
 		try {
 			Response response = Request.Post("https://" + getDocumentEndpoint() + "/2013-01-01/documents/batch")
 			        .useExpectContinue()
 			        .version(HttpVersion.HTTP_1_1)
 			        .addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType())
+                    .addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
 			        .bodyString(body, ContentType.APPLICATION_JSON)
 			        .execute();
 
 			HttpResponse resp = response.returnResponse();
+            try {
+                String inputLine;
+                StringBuilder sb = new StringBuilder();
+                BufferedReader in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+                while ((inputLine = in.readLine()) != null) {
+                    sb.append(inputLine);
+                }
+                in.close();
+                responseBody = sb.toString();
+            } catch (Exception e) {
+                responseBody = "ERROR: " + e.toString();
+            }
 			
 			int statusCode = resp.getStatusLine().getStatusCode();
 			if(statusCode >= 400 && statusCode < 500) {
@@ -259,6 +277,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		} catch (IOException e) {
 			throw new AmazonCloudSearchInternalServerException(e);
 		}
+        return responseBody;
 	}
 	
 	protected String inputStreamToString(InputStream in) throws IOException {
@@ -380,6 +399,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 			        .useExpectContinue()
 			        .version(HttpVersion.HTTP_1_1)
 			        .addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType())
+                    .addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
 			        .execute();
 
 			HttpResponse resp = response.returnResponse();
